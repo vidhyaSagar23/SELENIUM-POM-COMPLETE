@@ -21,7 +21,7 @@ public class CheckOutPage extends AbstractComponent {
     @FindBy(css = "[placeholder='Select Country']")
     WebElement countries;
 
-    @FindBy(xpath = "//span[text()='c India']")
+    @FindBy(xpath = "//span[contains(text(),'India')]")
     WebElement country;
 
     @FindBy(xpath = "//a[text()='Place Order ']")
