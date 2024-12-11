@@ -1,6 +1,10 @@
 package com.sagar.testcomponents;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagar.pageobjects.LandingPage;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -8,11 +12,15 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+import org.apache.commons.io.FileUtils;
 
 public class BaseTest {
     public WebDriver driver;
@@ -31,8 +39,6 @@ public class BaseTest {
             } else if (browserName.equalsIgnoreCase("firefox")) {
                 driver = new FirefoxDriver();
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +47,15 @@ public class BaseTest {
         return driver;
     }
 
-    @BeforeMethod
+    public List<HashMap<String, String>> readJsonData(String filePath) throws IOException {
+        String jsonData = FileUtils.readFileToString(new File(filePath), StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        List<HashMap<String, String>> data = mapper.readValue(jsonData, new TypeReference<List<HashMap<String, String>>>() {
+        });
+        return data;
+    }
+
+    @BeforeMethod(alwaysRun = true)
     public LandingPage launchApp() {
         driver = intializeDriver();
         landingPage = new LandingPage(driver);
@@ -49,8 +63,16 @@ public class BaseTest {
         return landingPage;
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown(){
         driver.close();
+    }
+
+    public String getScreenShot(String fileName, WebDriver driver) throws IOException {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        File destination = new File(System.getProperty("user.dir")+ "\\reports\\" +fileName +".png");
+        FileUtils.copyFile(source, destination);
+        return System.getProperty("user.dir")+ "\\reports\\" +fileName +".png";
     }
 }

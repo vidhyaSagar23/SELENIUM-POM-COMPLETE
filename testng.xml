@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="All Test Suite">
+    <listeners>
+        <listener class-name="com.sagar.Listeners.Listeners"/>
+    </listeners>
+    <groups>
+        <run>
+            <include name="smoke"/>
+            <exclude name="multiple"/>
+            <exclude name="maps"/>
+        </run>
+    </groups>
     <test verbose="2" preserve-order="true" name="C:/SAGAR WORK/SELENIUM_JAVA/Selenium-POM-final">
         <classes>
-            <class name="com.sagar.tests.SubmitorderTest">
+            <class name="com.sagar.tests.SubmitOrderTest">
                 <methods>
-                    <include name="sampleTest"/>
+                    <exclude name="sampleTest"/>
                 </methods>
             </class>
         </classes>
