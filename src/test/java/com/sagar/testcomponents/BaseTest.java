@@ -31,7 +31,7 @@ public class BaseTest {
         try {
             FileInputStream file = new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\java\\com\\sagar\\resources\\GlobalData.properties");
             properties.load(file);
-            String browserName = properties.getProperty("browser");
+            String browserName = System.getProperty("browser") != null ?System.getProperty("browser"):properties.getProperty("browser");
             if (browserName.equalsIgnoreCase("chrome")) {
                 driver = new ChromeDriver();
             } else if (browserName.equalsIgnoreCase("edge")) {
